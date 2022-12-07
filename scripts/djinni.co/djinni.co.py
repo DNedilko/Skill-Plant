@@ -9,12 +9,14 @@ from multiprocessing import Pool, Lock
 from datetime import date
 from parser_raw import parse_date, parse_remote_type, parse_region, parse_seniority
 
-file_name = 'data.json'
-page_next = 'https://djinni.co/jobs/?region=UKR&page={}'
-main_page = 'https://djinni.co/jobs/?region=UKR'
 today = date.today()
 
+page_next = 'https://djinni.co/jobs/?region=UKR&page={}'
+main_page = 'https://djinni.co/jobs/?region=UKR'
+file_name = f"djinni.co_{today.strftime('%d-%m')}.json"
+
 HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36'}
+
 WORKERS = 20
 lock = Lock()
 
