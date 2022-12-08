@@ -1,2 +1,7 @@
-docker-compose up
 
+# to build app
+docker-compose up -d
+# to shut it down
+docker-compose down -v
+# check running immages
+docker compose ls
