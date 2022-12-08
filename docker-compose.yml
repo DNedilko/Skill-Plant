@@ -11,6 +11,8 @@ services:
       - pgdata:/var/lib/postgresql/data
 #     SQL to create tables in db
       - ./create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+#      load starter data
+      - ./fill_tables.sql:/docker-entrypoint-initdb.d/fill_tables.sql
     environment:
               POSTGRES_USER: ${POSTGRES_USER:-postgres}
               POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
