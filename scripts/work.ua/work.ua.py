@@ -3,7 +3,10 @@ import re
 import json
 import time
 import itertools
+import sys
+sys.path.append('.')
 
+from Kafka.KafkaProducer import KafkaProducer
 from bs4 import BeautifulSoup
 from multiprocessing import Pool, Lock
 from datetime import date
@@ -18,6 +21,7 @@ file_name = f"work.ua_{today.strftime('%d-%m')}.json"
 HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36'}
 WORKERS = 20
 lock = Lock()
+kafka_producer = KafkaProducer()
 
 
 def write_to_json(vacancies):
@@ -144,6 +148,8 @@ def get_jobs_data(job_link_and_date):
         'seniority': seniority,
         'date_gathered': today.strftime('%d/%m/%Y')
     }
+
+    kafka_producer.produce_broker_message(vacancy)
 
     return [vacancy]
 
