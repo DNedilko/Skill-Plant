@@ -3,6 +3,9 @@ from confluent_kafka import Consumer
 
 class DatabaseProxy:
 
+    def is_duplicte(self, data):
+        pass
+
     def consume_broker_messages(self):
         consumer = Consumer(
             {'bootstrap.servers': 'localhost:9092', 'group.id': 'python-consumer', 'auto.offset.reset': 'earliest'})

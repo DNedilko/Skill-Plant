@@ -1,7 +1,10 @@
 import re
 import json
 import itertools
+import sys
+sys.path.append('.')
 
+from Kafka.KafkaProducer import KafkaProducer
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
@@ -22,6 +25,7 @@ lock = Lock()
 option = webdriver.ChromeOptions()
 option.add_argument('headless')
 web_driver = webdriver.Chrome(options=option)
+kafka_producer = KafkaProducer()
 
 
 def write_to_json(vacancies):
@@ -140,6 +144,8 @@ def get_jobs_data(job_link):
         'seniority': seniority,
         'date_gathered': today.strftime('%d/%m/%Y')
     }
+
+    kafka_producer.produce_broker_message(vacancy)
 
     print(f'job: {job_link}')
     # return vacancy
