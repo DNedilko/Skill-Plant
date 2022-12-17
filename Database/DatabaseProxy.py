@@ -1,6 +1,6 @@
 from DatabaseKafkaConsumer import DatabaseKafkaConsumer
 from Database import Database
-
+from description_parser import skills_extractor
 
 class DatabaseProxy:
 
@@ -10,6 +10,7 @@ class DatabaseProxy:
 
     def is_duplicte(self, data):
         pass
+
 
     def insert_row_into_database(self, data):
         pass

@@ -41,7 +41,7 @@ def get_pages_links():
         print(f'Can`t get count of total pages.\n{e}\nPages set 600')
         total_pages = 600
 
-    pages_links = [page_next.format(page) for page in range(1, total_pages + 1)]
+    pages_links = [page_next.format(page) for page in range(1, 3)]
     return pages_links
 
 
