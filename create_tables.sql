@@ -1,7 +1,5 @@
 drop table if exists skillplant_data;
 
-ALTER USER postgres PASSWORD 'changeme';
-
 create table IF NOT EXISTS skillplant_data
 (
     id            serial

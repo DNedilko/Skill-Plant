@@ -1,6 +1,5 @@
 from DatabaseKafkaConsumer import DatabaseKafkaConsumer
 from Database import Database
-from description_parser import skills_extractor
 
 class DatabaseProxy:
 
