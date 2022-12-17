@@ -14,7 +14,17 @@ create table IF NOT EXISTS skillplant_data
     remote        varchar,
     job_type      varchar,
     seniority     varchar,
-    date_gathered timestamp
+    date_gathered timestamp,
+    hard_skill_1   varchar,
+    hard_skill_2   varchar,
+    hard_skill_3   varchar,
+    hard_skill_4   varchar,
+    hard_skill_5   varchar,
+    soft_skill_1   varchar,
+    soft_skill_2   varchar,
+    soft_skill_3   varchar,
+    soft_skill_4   varchar,
+    soft_skill_5   varchar
 );
 
 alter table skillplant_data

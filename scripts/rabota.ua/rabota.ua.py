@@ -22,9 +22,18 @@ HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/
 WORKERS = 20
 lock = Lock()
 
-option = webdriver.ChromeOptions()
-option.add_argument('headless')
-web_driver = webdriver.Chrome(options=option)
+options = webdriver.ChromeOptions()
+options.headless = True
+options.add_argument('start-maximized')
+options.add_argument('--no-sandbox')
+options.add_argument('--disable-extensions')
+options.add_argument('--disable-dev-shm-usage')
+options.add_argument('--disable-gpu')
+options.add_argument('--ignore-certificate-errors')
+options.add_argument('--hide-scrollbars')
+options.add_argument('--single-process')
+web_driver = webdriver.Chrome(options=options)
+
 kafka_producer = KafkaProducer()
 
 
@@ -87,7 +96,7 @@ def get_jobs_data(job_link):
     try:
         description = soup_job.find('div', class_='full-desc ng-star-inserted').getText().strip()
     except Exception as e:
-        print(e, 'trying again ...')
+        # print(e, 'trying again ...')
         web_driver.implicitly_wait(1.5)
         return get_jobs_data(job_link)
 
