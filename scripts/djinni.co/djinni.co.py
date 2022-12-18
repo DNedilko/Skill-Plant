@@ -11,6 +11,8 @@ from bs4 import BeautifulSoup
 from multiprocessing import Pool, Lock
 from datetime import date
 from parser_raw import parse_date, parse_remote_type, parse_region, parse_seniority
+from scripts.description_parser import skills_extractor
+import spacy
 
 today = date.today()
 
@@ -129,9 +131,13 @@ def get_jobs_data(job_link):
         'date_gathered': today.strftime('%d/%m/%Y %H:%M:%S')
     }
 
-    kafka_producer.produce_broker_message(vacancy)
+    nlp = spacy.load("en_core_web_lg")
+    vacancy_parsed = skills_extractor(vacancy, nlp)
+    print(vacancy_parsed)
 
-    return [vacancy]
+    kafka_producer.produce_broker_message(vacancy_parsed)
+
+    return [vacancy_parsed]
 
 
 if __name__ == '__main__':
