@@ -17,7 +17,7 @@ class DatabaseProxy:
     def consume_broker_messages(self):
 
         self.consumer.subscribe(['user-tracker'])
-
+        print(self.database)
         while True:
             message = self.consumer.poll(1.0)  # timeout
             if message is None:
@@ -26,7 +26,7 @@ class DatabaseProxy:
                 print('Error: {}'.format(message.error()))
                 continue
             data = message.value().decode('utf-8')
-            print(data.keys())
+            # print(data.keys())
         self.consumer.close()
 
 
