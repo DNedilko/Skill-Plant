@@ -41,7 +41,7 @@ def get_pages_links():
         print(f'Can`t get count of total pages.\n{e}\nPages set 600')
         total_pages = 600
 
-    pages_links = [page_next.format(page) for page in range(1, 3)]
+    pages_links = [page_next.format(page) for page in range(1, total_pages + 1)]
     return pages_links
 
 
@@ -90,18 +90,18 @@ def get_jobs_data(job_link):
     region, country = parse_region(region_raw)
 
     try:
-        remote_type_raw = soup_job.find('span', text='maps_home_work').parent()[1].text
+        remote_type_raw = soup_job.find('span', {'class': re.compile('^bi bi-building mr-2.*')}).parent()[1].text
         remote_type = parse_remote_type(remote_type_raw)
     except:
         remote_type = ''
 
     try:
-        employment_type = soup_job.find('span', text='timelapse').parent()[1].text
+        employment_type = soup_job.find('span', {'class': re.compile('^bi bi-clock-history mr-2.*')}).parent()[1].text
     except:
         employment_type = ''
 
     try:
-        business_type = soup_job.find('span', text='business_center').parent()[1].text
+        business_type = soup_job.find('span', {'class': re.compile('^bi bi-exclude mr-2.*')}).parent()[1].text
     except:
         business_type = ''
 
@@ -126,7 +126,7 @@ def get_jobs_data(job_link):
         'salary': salary,
         'additional_info': additional_info,
         'seniority': seniority,
-        'date_gathered': today.strftime('%d/%m/%Y')
+        'date_gathered': today.strftime('%d/%m/%Y %H:%M:%S')
     }
 
     kafka_producer.produce_broker_message(vacancy)
@@ -143,4 +143,4 @@ if __name__ == '__main__':
     with Pool(WORKERS) as pool:
         jobs_data = list(itertools.chain(*pool.map(get_jobs_data, jobs)))
 
-    write_to_json(jobs_data)
+    # write_to_json(jobs_data)
