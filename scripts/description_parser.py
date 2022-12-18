@@ -38,6 +38,8 @@ def skills_extraction(text, nlp):
     # extract skills from job_description
     skills_dict = skill_extractor.annotate(text)
     # print(skills_dict)
+    stop_s = 0
+    stop_h = 0
     dict_skill = {"Hard Skill": [], "Soft Skill": []}
     for k in skills_dict['results']:
         skills = skills_dict['results'][k]
@@ -46,15 +48,20 @@ def skills_extraction(text, nlp):
             if el['skill_id'] not in temp_skills_id:
                 temp_skills_id.append(el['skill_id'])
 
-                with open("skill_db_relax_20.json") as file:
+                with open(".../skill_db_relax_20.json") as file:
                     skills_db = json.load(file)
                     type = skills_db[el['skill_id']]["skill_type"]
-                    dict_skill[type].append(el['doc_node_value'])
+                    if type == "Hard Skill" and stop_h<=5:
+                        dict_skill[type].append(el['doc_node_value'])
+                        stop_h+=1
+                    elif stop_s<=5 :
+                        dict_skill[type].append(el['doc_node_value'])
+                        stop_s+=1
+
 
     return dict_skill
 
-def skills_extractor(job):
-    nlp = spacy.load("en_core_web_lg")
+def skills_extractor(job, nlp):
     desc = get_description(job)
     desc_translated = translation(desc)
     skills = skills_extraction(desc_translated, nlp)
