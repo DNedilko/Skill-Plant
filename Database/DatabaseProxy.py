@@ -8,7 +8,19 @@ class DatabaseProxy:
         self.database = Database().getConnection()
 
     def is_duplicte(self, data):
-        pass
+        cur = self.Database.cursor()
+
+        # Select all rows from the table where all columns are the same as the current row
+        cur.execute(
+            "SELECT * FROM mytable t1 WHERE EXISTS (SELECT * FROM mytable t2 WHERE t1.col1 = t2.col1 AND t1.col2 = t2.col2 AND t1.col3 = t2.col3 AND t1.col4 = t2.col4 AND t1.col5 = t2.col5)")
+
+        # Fetch the rows
+        rows = cur.fetchall()
+
+        if len(rows) > 0:
+            return False
+        else:
+            return True
 
 
     def insert_row_into_database(self, data):
