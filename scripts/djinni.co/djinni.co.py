@@ -12,7 +12,6 @@ from multiprocessing import Pool, Lock
 from datetime import date
 from parser_raw import parse_date, parse_remote_type, parse_region, parse_seniority
 from scripts.description_parser import skills_extractor
-import spacy
 
 today = date.today()
 
@@ -131,22 +130,21 @@ def get_jobs_data(job_link):
         'date_gathered': today.strftime('%d/%m/%Y %H:%M:%S')
     }
 
-    nlp = spacy.load("en_core_web_lg")
-    vacancy_parsed = skills_extractor(vacancy, nlp)
-    print(vacancy_parsed)
+    vacancy_mod = skills_extractor(vacancy)
+    print(vacancy_mod)
+    kafka_producer.produce_broker_message(vacancy_mod)
 
-    kafka_producer.produce_broker_message(vacancy_parsed)
-
-    return [vacancy_parsed]
+    return [vacancy_mod]
 
 
 if __name__ == '__main__':
+
     pages = get_pages_links()
 
     with Pool(WORKERS) as pool:
         jobs = list(itertools.chain(*pool.map(get_job_links, pages)))
 
     with Pool(WORKERS) as pool:
-        jobs_data = list(itertools.chain(*pool.map(get_jobs_data, jobs)))
+        jobs_data = list(itertools.chain(*pool.map(get_jobs_data,jobs)))
 
     # write_to_json(jobs_data)
