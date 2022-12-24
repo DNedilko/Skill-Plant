@@ -32,17 +32,25 @@ def skills_extraction(text, db):
 
     appended = 0
     for skill in db["Hard Skill"]:
-        if skill.lower() in text.lower():
-            dict_skill["Hard Skill"].append(skill.lower())
-            appended+=1
+        try:
+            skill = skill.lower()
+        except:
+            skill = str(skill)
+        if skill in text.lower():
+            dict_skill["Hard Skill"].append(skill)
+            appended += 1
             if appended > 5: break
 
     appended = 0
     for skill in db["Soft Skill"]:
-        if skill.lower() in text.lower():
-            dict_skill["Soft Skill"].append(skill.lower())
-            appended+=1
-            if appended>5: break
+        try:
+            skill = skill.lower()
+        except:
+            skill = str(skill)
+        if skill in text.lower():
+            dict_skill["Soft Skill"].append(skill)
+            appended += 1
+            if appended > 5: break
 
     dict_skill["Hard Skill"].extend(empty1)
     dict_skill["Soft Skill"].extend(empty2)
