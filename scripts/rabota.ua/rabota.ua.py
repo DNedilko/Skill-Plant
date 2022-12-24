@@ -151,7 +151,7 @@ def get_jobs_data(job_link):
         'salary': salary,
         'additional_info': additional_info,
         'seniority': seniority,
-        'date_gathered': today.strftime('%d/%m/%Y')
+        'date_gathered': today.strftime('%d/%m/%Y %H:%M:%S')
     }
 
     kafka_producer.produce_broker_message(vacancy)
@@ -172,5 +172,5 @@ if __name__ == '__main__':
         jobs_data = list(itertools.chain(*pool.map(get_jobs_data, jobs)))
 
     web_driver.quit()
-    write_to_json(jobs_data)
+    # write_to_json(jobs_data)
 

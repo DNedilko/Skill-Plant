@@ -5,7 +5,7 @@ services:
   datascience-notebook:
     image: jupyter/datascience-notebook
     volumes:
-      - /var/www/jupyter/notebooks:/home/jovyan/work
+      - C:/Users/dnedi/PycharmProjects/Skill-Plant/Jupyter:/home/jovyan/work
     ports:
       - 8888:8888
     container_name: datascience-notebook-container
