@@ -21,11 +21,11 @@ file_name = f"djinni.co_{today.strftime('%d-%m')}.json"
 
 HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36'}
 
-WORKERS = 5
+WORKERS = 20
 lock = Lock()
 kafka_producer = KafkaProducer()
 
-with open("C:/Users/dnedi/PycharmProjects/Skill-Plant/scripts/skills_data.json") as file:
+with open("../skills_data.json") as file:
     skills_db = json.load(file)
 
 def write_to_json(vacancies):
@@ -44,7 +44,7 @@ def get_pages_links():
         print(f'Can`t get count of total pages.\n{e}\nPages set 600')
         total_pages = 600
 
-    pages_links = [page_next.format(page) for page in range(1, 50)]
+    pages_links = [page_next.format(page) for page in range(1, total_pages + 1)]
     return pages_links
 
 
@@ -132,8 +132,7 @@ def get_jobs_data(job_link):
         'date_gathered': today.strftime('%d/%m/%Y %H:%M:%S')
     }
 
-    vacancy_mod = skills_extractor(vacancy,skills_db)
-    # print(vacancy_mod)
+    vacancy.update(skills_extractor(vacancy, skills_db))
     kafka_producer.produce_broker_message(vacancy)
 
     return [vacancy]
@@ -147,6 +146,6 @@ if __name__ == '__main__':
         jobs = list(itertools.chain(*pool.map(get_job_links, pages)))
 
     with Pool(WORKERS) as pool:
-        jobs_data = list(itertools.chain(*pool.map(get_jobs_data,jobs)))
+        jobs_data = list(itertools.chain(*pool.map(get_jobs_data, jobs)))
 
     # write_to_json(jobs_data)
