@@ -1,11 +1,13 @@
 from DatabaseKafkaConsumer import DatabaseKafkaConsumer
 from Database import Database
+import json
+# from description_parser import skills_extractor
 
 class DatabaseProxy:
 
     def __init__(self):
         self.consumer = DatabaseKafkaConsumer().getCustomer()
-        self.database = Database().getConnection()
+        self.database = Database()
 
     def is_duplicte(self, data):
         cur = self.Database.cursor()
@@ -37,7 +39,8 @@ class DatabaseProxy:
             if message.error():
                 print('Error: {}'.format(message.error()))
                 continue
-            data = message.value().decode('utf-8')
+            data = json.loads(message.value().decode('utf-8'))
+            self.database.insert_row_into_database(data)
             print(data.keys())
         self.consumer.close()
 
