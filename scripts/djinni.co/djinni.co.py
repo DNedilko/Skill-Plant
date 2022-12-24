@@ -24,6 +24,7 @@ WORKERS = 20
 lock = Lock()
 kafka_producer = KafkaProducer()
 
+
 def write_to_json(vacancies):
     with open(file_name, 'w', encoding='utf-8') as f:
         json.dump({"jobs": vacancies}, f, indent=2, ensure_ascii=False)
@@ -40,7 +41,7 @@ def get_pages_links():
         print(f'Can`t get count of total pages.\n{e}\nPages set 600')
         total_pages = 600
 
-    pages_links = [page_next.format(page) for page in range(1, total_pages + 1)]
+    pages_links = [page_next.format(page) for page in range(1, 3)]
     return pages_links
 
 
@@ -74,7 +75,7 @@ def get_jobs_data(job_link):
     except:
         company = ''
 
-    date_raw = soup_job.find('i', class_='icon-pencil').nextSibling.strip()
+    date_raw = soup_job.find('span', class_='bi bi-pencil-square').nextSibling.strip()
     date_raw = re.search('\d.*', date_raw).group(0)
     date = parse_date(date_raw).strftime('%d/%m/%Y')
 
@@ -131,6 +132,7 @@ def get_jobs_data(job_link):
     kafka_producer.produce_broker_message(vacancy)
 
     return [vacancy]
+
 
 if __name__ == '__main__':
     pages = get_pages_links()
