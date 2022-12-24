@@ -11,6 +11,7 @@ from bs4 import BeautifulSoup
 from multiprocessing import Pool, Lock
 from datetime import date
 from parser_raw import parse_date, parse_remote_type, parse_region, parse_seniority
+from scripts.description_parser import skills_extractor
 
 today = date.today()
 
@@ -24,6 +25,8 @@ WORKERS = 20
 lock = Lock()
 kafka_producer = KafkaProducer()
 
+with open("../skills_data.json") as file:
+    skills_db = json.load(file)
 
 def write_to_json(vacancies):
     with open(file_name, 'w', encoding='utf-8') as f:
@@ -129,12 +132,14 @@ def get_jobs_data(job_link):
         'date_gathered': today.strftime('%d/%m/%Y %H:%M:%S')
     }
 
+    vacancy.update(skills_extractor(vacancy, skills_db))
     kafka_producer.produce_broker_message(vacancy)
 
     return [vacancy]
 
 
 if __name__ == '__main__':
+
     pages = get_pages_links()
 
     with Pool(WORKERS) as pool:
