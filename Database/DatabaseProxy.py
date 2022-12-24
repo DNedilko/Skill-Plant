@@ -1,7 +1,5 @@
 from DatabaseKafkaConsumer import DatabaseKafkaConsumer
 from Database import Database
-import json
-# from description_parser import skills_extractor
 
 import json
 import datetime
@@ -10,10 +8,10 @@ class DatabaseProxy:
 
     def __init__(self):
         self.consumer = DatabaseKafkaConsumer().getCustomer()
-        self.database = Database()
+        self.database = Database().getConnection()
 
-    def is_duplicte(self, data):
-        cur = self.Database.cursor()
+    def is_duplicate(self, data):
+        cur = self.database.cursor()
 
         # Select all rows from the table where all columns are the same as the current row
         cur.execute(
@@ -52,12 +50,9 @@ class DatabaseProxy:
                 print('Error: {}'.format(message.error()))
                 continue
 
-
             # data = message.value().decode('utf-8')
             data = message.value()
-
             self.insert_row_into_database(json.loads(data, strict=False))
-
 
         self.consumer.close()
 
