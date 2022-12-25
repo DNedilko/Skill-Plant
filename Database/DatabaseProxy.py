@@ -10,20 +10,15 @@ class DatabaseProxy:
         self.consumer = DatabaseKafkaConsumer().getCustomer()
         self.database = Database().getConnection()
 
-    def is_duplicate(self, data):
+    def delete_duplicates(self):
+
         cur = self.database.cursor()
 
-        # Select all rows from the table where all columns are the same as the current row
-        cur.execute(
-            "SELECT * FROM skillplant_data t1 WHERE EXISTS (SELECT * FROM skillplant_data t2 WHERE t1.position = t2.position AND t1.company = t2.company AND t1.region = t2.region AND t1.country = t2.country AND t1.seniority = t2.seniority)")
-
-        # Fetch the rows
-        rows = cur.fetchall()
-
-        if len(rows) > 0:
-            return False
-        else:
-            return True
+        cur.execute("DELETE FROM skillplant_data a USING "
+                    "(SELECT MIN(ctid) as ctid, position, region, country, company, seniority FROM skillplant_data GROUP BY position, region, country, company, seniority HAVING COUNT(*) > 1) b "
+                    "WHERE a.position = b.position AND a.region = b.region AND a.country = b.country AND a.company = b.company AND a.seniority = b.seniority AND a.ctid <> b.ctid")
+        print('Duplicates deleted')
+        self.database.commit()
 
     def insert_row_into_database(self, data):
         cur = self.database.cursor()
@@ -43,16 +38,15 @@ class DatabaseProxy:
         self.consumer.subscribe(['user-tracker'])
         print(self.database)
         while True:
-            message = self.consumer.poll(1.0)  # timeout
+            message = self.consumer.poll(60.0)  # timeout
             if message is None:
+                self.delete_duplicates()
                 continue
             if message.error():
                 print('Error: {}'.format(message.error()))
                 continue
 
-            # data = message.value().decode('utf-8')
-            data = message.value()
-
+            data = message.value().decode('utf-8')
             self.insert_row_into_database(json.loads(data, strict=False))
 
         self.consumer.close()
