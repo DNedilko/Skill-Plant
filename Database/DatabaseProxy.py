@@ -10,15 +10,19 @@ class DatabaseProxy:
         self.consumer = DatabaseKafkaConsumer().getCustomer()
         self.database = Database().getConnection()
 
-    def delete_duplicates(self):
-
+    def is_duplicate(self, data):
         cur = self.database.cursor()
 
-        cur.execute("DELETE FROM skillplant_data a USING "
-                    "(SELECT MIN(ctid) as ctid, position, region, country, company, seniority FROM skillplant_data GROUP BY position, region, country, company, seniority HAVING COUNT(*) > 1) b "
-                    "WHERE a.position = b.position AND a.region = b.region AND a.country = b.country AND a.company = b.company AND a.seniority = b.seniority AND a.ctid <> b.ctid")
-        print('Duplicates deleted')
-        self.database.commit()
+        # Select all rows from the table where all columns are the same as the current row
+        cur.execute(
+            "SELECT * FROM skillplant_data t1 WHERE t1.position = '{position}' AND t1.company = '{company}' AND t1.region = '{region}' AND t1.country = '{country}' AND t1.seniority = '{seniority}'".format
+            (position=data['title'], company=data['company'], region=data['region'], country=data['country'], seniority=data['seniority']))
+
+        # Fetch the rows
+        rows = cur.fetchall()
+
+        return len(rows) > 0
+
 
     def insert_row_into_database(self, data):
         cur = self.database.cursor()
@@ -38,16 +42,18 @@ class DatabaseProxy:
         self.consumer.subscribe(['user-tracker'])
         print(self.database)
         while True:
-            message = self.consumer.poll(60.0)  # timeout
+            message = self.consumer.poll(1.0)  # timeout
             if message is None:
-                self.delete_duplicates()
                 continue
             if message.error():
                 print('Error: {}'.format(message.error()))
                 continue
 
             data = message.value().decode('utf-8')
-            self.insert_row_into_database(json.loads(data, strict=False))
+            data = json.loads(data, strict=False)
+
+            if not self.is_duplicate(data):
+                self.insert_row_into_database(data)
 
         self.consumer.close()
 
