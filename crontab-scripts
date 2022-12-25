@@ -1,0 +1,4 @@
+0 0 * * * python scripts/djinni.co/djinni.co.py
+0 0 * * * python scripts/work.ua/work.ua.py
+0 0 * * * python scripts/rabota.ua/rabota.ua.py
+0 0 * * * python Database/DatabaseProxy.py
