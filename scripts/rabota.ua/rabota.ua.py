@@ -51,9 +51,12 @@ def get_pages_links():
         total_pages = web_driver.find_element(by=By.XPATH,
                                               value="//div[@class='disable ng-star-inserted']/following-sibling::div").text
     except:
-        web_driver.implicitly_wait(2)
-        total_pages = web_driver.find_element(by=By.XPATH,
-                                              value="//div[@class='disable ng-star-inserted']/following-sibling::div").text
+        web_driver.implicitly_wait(10)
+        try:
+            total_pages = web_driver.find_element(by=By.XPATH,
+                                                  value="//div[@class='disable ng-star-inserted']/following-sibling::div").text
+        except:
+            total_pages = 110
 
     try:
         total_pages = int(total_pages)
