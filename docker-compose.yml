@@ -71,12 +71,12 @@ services:
     ports:
       - "5050:80"
 
-  cron:
-    image: demo-image:latest
-    entrypoint: /bin/bash
-    command: [ "cron", "-f" ]
-    volumes:
-      - data:/app-data
+#  cron:
+#    image: demo-image:latest
+#    entrypoint: /bin/bash
+#    command: [ "cron", "-f" ]
+#    volumes:
+#      - data:/app-data
 
 volumes:
   data:
