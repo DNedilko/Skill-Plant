@@ -15,7 +15,7 @@ class DatabaseProxy:
 
         # Select all rows from the table where all columns are the same as the current row
         cur.execute(
-            "SELECT * FROM mytable t1 WHERE EXISTS (SELECT * FROM mytable t2 WHERE t1.col1 = t2.col1 AND t1.col2 = t2.col2 AND t1.col3 = t2.col3 AND t1.col4 = t2.col4 AND t1.col5 = t2.col5)")
+            "SELECT * FROM skillplant_data t1 WHERE EXISTS (SELECT * FROM skillplant_data t2 WHERE t1.position = t2.position AND t1.company = t2.company AND t1.region = t2.region AND t1.country = t2.country AND t1.seniority = t2.seniority)")
 
         # Fetch the rows
         rows = cur.fetchall()
@@ -52,6 +52,7 @@ class DatabaseProxy:
 
             # data = message.value().decode('utf-8')
             data = message.value()
+
             self.insert_row_into_database(json.loads(data, strict=False))
 
         self.consumer.close()
