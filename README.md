@@ -79,7 +79,7 @@ python ./Database/DatabaseProxy.py
 
 **Крок 6.** Щоб відкрити Jupyter, скопіюйте посилання у вашому Docker додатку або у терміналі, якщо ви запускали систему командою docker-compose up
 
-**Крок 8.** Підключайся до БД з jupyter notebook та працюй з даними!
+**Крок 7.** Підключайся до БД з jupyter notebook та працюй з даними!
 
 Щоб почитати цей гайд з картинками перейдіть за [посиланням](https://docs.google.com/document/d/13UaltWiAEUJr98ad9ps3Upz_JQrmOdPwzY3piguUzCA/edit)
 
