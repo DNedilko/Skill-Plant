@@ -66,10 +66,10 @@ gh repo clone ViktoriiaHudym/Skill-Plant
 
 **Крок 2.** Розгони систему за допомогою команд docker-compose up або docker-compose up -d
 
-**Крок 3.** Встанови requirements командою pip install -r requirements.txt 
-Перед тим як запускати проєкт, варто встановити усі requirements, вони є у файлі ***requirements.txt.*** 
+**Крок 3.** Встанови requirements командою 
+```pip install -r requirements.txt ```
 
-**Крок 4.** Запуск лоадерів та проксі з терміналу:
+**Крок 4.** Запусти лоадери та проксі, з терміналу це можна зробити такими командами:
 ```python
 python ./scripts/djinni.co/djinni.co.py
 python ./scripts/rabota.ua/rabota.ua.py
