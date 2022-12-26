@@ -4,5 +4,6 @@ docker-compose up -d
 # to shut it down
 docker-compose down -v
 # check running immages
-
-docker compose ls
+docker-compose ls
+# check running containers
+docker-compose ps

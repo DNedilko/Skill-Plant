@@ -15,8 +15,8 @@ class DatabaseProxy:
 
         # Select all rows from the table where all columns are the same as the current row
         cur.execute(
-            "SELECT * FROM skillplant_data t1 WHERE t1.position = '{position}' AND t1.company = '{company}' AND t1.region = '{region}' AND t1.country = '{country}' AND t1.seniority = '{seniority}'".format
-            (position=data['title'], company=data['company'], region=data['region'], country=data['country'], seniority=data['seniority']))
+            """SELECT * FROM skillplant_data t1 WHERE t1.position = '{position}' AND t1.company = '{company}' AND t1.region = '{region}' AND t1.country = '{country}' AND t1.seniority = '{seniority}'""".format
+            (position=data['title'].replace("'","''"), company=data['company'].replace("'","''"), region=data['region'].replace("'","''"), country=data['country'].replace("'","''"), seniority=data['seniority']))
 
         # Fetch the rows
         rows = cur.fetchall()
@@ -32,7 +32,7 @@ class DatabaseProxy:
 
         date_updated = datetime.datetime.strptime(data['updated'], "%d/%m/%Y").date()
         date_gathered = datetime.datetime.strptime(data['date_gathered'], "%d/%m/%Y %H:%M:%S").date()
-        val = (data['title'], data['company'], date_updated, data['region'], data['country'], data['description'], data['remote_type'], data['employment_type'], data['seniority'], date_gathered, data["Hard Skill"][0],data["Hard Skill"][1],data["Hard Skill"][2], data["Hard Skill"][3], data["Hard Skill"][4],data["Soft Skill"][0],data["Soft Skill"][1],data["Soft Skill"][2], data["Soft Skill"][3], data["Soft Skill"][4])
+        val = (data['title'].replace("'","''"), data['company'].replace("'","''"), date_updated, data['region'].replace("'","''"), data['country'].replace("'","''"), data['description'].replace("'","''"), data['remote_type'], data['employment_type'], data['seniority'], date_gathered, data["Hard Skill"][0],data["Hard Skill"][1],data["Hard Skill"][2], data["Hard Skill"][3], data["Hard Skill"][4],data["Soft Skill"][0],data["Soft Skill"][1],data["Soft Skill"][2], data["Soft Skill"][3], data["Soft Skill"][4])
 
         cur.execute(query, val)
         self.database.commit()
@@ -52,8 +52,12 @@ class DatabaseProxy:
             data = message.value().decode('utf-8')
             data = json.loads(data, strict=False)
 
-            if not self.is_duplicate(data):
-                self.insert_row_into_database(data)
+            try:
+                if not self.is_duplicate(data):
+                    self.insert_row_into_database(data)
+            except Exception as i:
+                print(f"Error {i}")
+                continue
 
         self.consumer.close()
 
